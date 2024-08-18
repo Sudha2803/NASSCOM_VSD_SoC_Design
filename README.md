@@ -144,6 +144,150 @@ This can once again be viewed using the MAGIC tool as used before, by running th
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.placement.def
 ```
 The result of the placement step is shown below.
+
 ![Screenshot 2024-08-18 061812](https://github.com/user-attachments/assets/c7baa116-a603-46c8-be27-5fac61d9339c)
 Again for this, details regarding the specific cells and interconnections can be accessed using commands typed into the *tckon* window.
+
 ![Screenshot 2024-08-18 061912](https://github.com/user-attachments/assets/1aca1258-3aff-4a6f-8817-72476b5ad867)
+
+## **DAY 3 - Design Library Cell using MAGIC layout and ngspice characterization**
+
+### LAB
+Floorplan variables like *core utilization* and *IO Mode* can be altered even during the flow, so modifications to the design are relatively easy. 
+
+For this analysis, the design of an inverter cell is used, and spice analysis is performed on it. In order to do this, the Github respository containing the design and specification files is cloned by the command :
+
+```
+git clone https://github.com/nickson-jose/vsdstdcelldesign.git
+```
+The inverter design file from the cloned repository is then opened using the **MAGIC** tool, as shown
+
+![Screenshot 2024-08-18 122355](https://github.com/user-attachments/assets/4feb815b-092d-463e-ad84-103ca069cf92)
+
+The upper half of the shown diagram is the PMOS, with the nwell surrounding it, and the lower half is the NMOS. This can be verified from the *tckon* window as well, by running the following commands :
+```
+Hover the mouse over the component in question
+Click 's' to select the component
+Open the tckon window and type 'what'
+```
+![Screenshot 2024-08-18 061912](https://github.com/user-attachments/assets/d46f33de-2bc1-4f18-a491-778b7b0e467b)
+
+Now in the *tckon* window, the following commands are used to exctract the spice file for this design
+```
+extract all
+ext2spice cthresh 0 rthresh 0
+ext2spice
+```
+Now in the library, the spice file has been generated in the same folder as shown in the highlighted lines.
+
+![Screensho![Screenshot 2024-08-18 123409](https://github.com/user-attachments/assets/45b2b846-5d89-4a26-9bed-9025cd79bd51)
+t 2024-08-18 131005](https://github.com/user-attachments/assets/9237ca4f-13ca-41e7-bcd6-274ed8085b84)
+
+Now, opening the spice file from this library :
+
+![Screenshot 2024-08-18 123409](https://github.com/user-attachments/assets/a3647b21-fb6c-4b77-92ec-601ccad1fbd8)
+
+The following changes are made to the file, and the file is saved.
+
+![Screenshot 2024-08-18 133350](https://github.com/user-attachments/assets/0274005b-2651-40c0-9831-4da7a02c4fc6)
+
+**Navigation commands in Vim**
+* Normal mode - ESC
+* Insert mode - i/a/o
+* Search mode - /text_to_be_searched
+* Save and exit mode - :wq!
+
+To simulate the file in ngspice, the following command is used
+```
+ngspice sky130_inv.spice
+```
+
+![Screenshot 2024-08-18 133727](https://github.com/user-attachments/assets/8573b3f0-32ff-47b6-baf5-ddbdf2e392e9)
+
+The results of this simulation are plotted using the command
+```
+plot y vs time a
+```
+
+![Screenshot 2024-08-18 133938](https://github.com/user-attachments/assets/fed0e50a-81d8-4653-ae82-7270a290b8b0)
+
+The inverter characteristics such as *rise time*, *fall time*, *transition time* can be calculated from the graph
+* Rise time - The time taken for the signal to transition from 20% of Vdd to 80% of Vdd (0 -> 1)
+* Fall time - The time taken for the signal to transition from 80% of Vdd to 20% of Vdd (1 -> 0)
+* Transition time - The time difference between input signal attaining 50% of Vdd and output signal attaining 50% of Vdd
+
+For Vdd of 3.3V as chosen, the 20% and 80% values are calculated and respective readings are taken
+
+![Screenshot 2024-08-19 004732](https://github.com/user-attachments/assets/607c5239-841d-492f-a3f6-83d12ea6b04d)
+![Screenshot 2024-08-19 004857](https://github.com/user-attachments/assets/147aead5-84e8-4ebc-8dc2-93b069ba4919)
+
+![Screenshot 2024-08-19 004605](https://github.com/user-attachments/assets/0da754fe-ce1c-4b45-918f-a9d7641b2f15)
+
+Calculating from the observed values, 
+* **Rise time** - 0.0634ns
+* **Fall time** - 0.0452ns
+* **Transition time** - 0.068ns
+
+In the next set of lab analysis, a set of drc test files are to be imported and unzipped, using the commands
+```
+sudo wget http://opencircuitdesign.com/open_pdks/archive/drc_tests.tgz
+sudo tar xfz drc_tests.tgz
+```
+
+![Screenshot 2024-08-19 014738](https://github.com/user-attachments/assets/9de5fe89-20a7-473b-b087-2d38b17e0e96)
+
+To examine these files using the MAGIC tool
+```
+command magic -d XR
+```
+Now open the *met3.mag* file in MAGIC.
+
+![Screenshot 2024-08-19 015130](https://github.com/user-attachments/assets/cf1191ac-ae44-4324-94ed-05af5b3bed9e)
+
+In order to see the various DRC errors, select a component and type 'why' in the *tckon* console
+
+Open the *poly.mag* file. 
+![Screenshot 2024-08-19 021946](https://github.com/user-attachments/assets/687f9867-6f13-4736-96ee-97097b17a9d7)
+
+An attempt to fix one of the errors, poly.9 error, first the participating layers are ascertained as shown. The error lies in the spacing between the two poly layers (*npolyres* and *poly*), which hasn't been defined correctly as an error.
+The spacing is measured to be 0.2 micrometres.
+
+![Screenshot 2024-08-19 021916](https://github.com/user-attachments/assets/9cebbe03-ba0e-4511-bdfd-fec555af213d)
+
+To rectify this, open the *sky130A.tech* file, which is located in the *drc_tests* directory. Make the modifications as shown below and save the file.
+
+![image](https://github.com/user-attachments/assets/1ff3c177-0d19-49d9-b5cc-0b88540384c7)
+
+Reload the *sky130A.tech* file and rerun the DRC check by the commands
+```
+tech load sky130A.tech
+drc check
+```
+
+![Screenshot 2024-08-18 152005](https://github.com/user-attachments/assets/fb2622a1-bf85-41f5-af5d-86c9568c96b5)
+
+Now the poly.9 shows an error upon DRC check.
+In this next analysis to show a DRC error as a geometric construct. Open *nwell.mag* and execute the following commands in the *tckon* console.
+
+```
+cif ostyle drc
+cif see dnwell_shrink
+```
+* nwell.mag
+![Screenshot 2024-08-18 162417](https://github.com/user-attachments/assets/8cb9a2c2-be07-4468-af99-03555ad353fe)
+
+With respect to nwell.6, the error in the poly layer acting as a boundary, and specifically, the dimensions of this boundary violating the tech specifications. 
+
+![Screenshot 2024-08-18 154244](https://github.com/user-attachments/assets/612f06ae-dc1a-401f-802f-c662ec33d9fb)
+
+Once again open *sky130A.tech*, search for 'drc', and make the following changes
+
+![Screenshot 2024-08-18 162155](https://github.com/user-attachments/assets/aabbcbca-1eab-4563-b8be-4b77ae168f84)
+
+After altering the tech file, once again open the *tckon* console and enter the following commands to see the results
+```
+drc check
+drc style drc(full)
+drc check
+```
+
