@@ -40,3 +40,44 @@ In the process of designing an ASIC _(Application Specific Integrated Circuit)_ 
 * STA (OpenSTA) : Verifies timing after placement and routing.
 * DFT (Fault) : Inserts test structures for manufacturing testing.
 * Physical Verification (magic & netgen) : Ensures layout adheres to design rules and is electrically correct.
+
+
+### LAB 
+The OpenLANE docker is inititated using the following commands as shown. 
+
+![Screenshot 2024-08-15 233213](https://github.com/user-attachments/assets/9a332bc9-d3b0-45c6-9b00-2bb8d57e6ce2)
+
+The design in use, picorv32a, is made ready for synthesis by the command
+```
+prep -design picorv32a
+```
+in order to merge the lef file
+After the design is prepared, we run the synthesis as shown in the docker. 
+```
+run_synthesis
+```
+
+![Screenshot 2024-08-16 052134](https://github.com/user-attachments/assets/f69092c3-71ef-41bb-8b19-5f9401d9d865)
+
+Synthesis was successful, and this creates a new run, with the specified date and time, within the **runs** folder of picorv32a.
+The chip area for this design is 147712.92
+
+![chip area](https://github.com/user-attachments/assets/8612611e-eb07-4039-a359-4178d535677f)
+
+The **flop ratio** can be defined as the number of flip flips divided by the total number of cells. To calculate this, 
+```
+Number of flipflops = 1613
+Number of cells = 14876
+=> Flop ratio = 0.1084
+```
+
+![flop r![Screenshot 2024-08-16 050800](https://github.com/user-attachments/assets/ef30e456-2ee2-4e98-a963-6c20fb0cb217)
+atio](https://github.com/user-attachments/assets/a7e6ca7d-c5c9-494b-a6b4-3b5789780ddc)
+
+The results of running this synthesis are stored in a separate folder in the runs directory as shown
+
+![Screenshot 2024-08-16 050800](https://github.com/user-attachments/assets/56e91de6-3f5d-46a0-81a1-a0e4e0a9daaa)
+
+## **DAY 2 - Good Floorplan vs. Bad Floorplan & Introduction to Library Cells**
+
+### LAB
