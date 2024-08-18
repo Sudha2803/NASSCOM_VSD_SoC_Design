@@ -291,3 +291,82 @@ drc style drc(full)
 drc check
 ```
 
+## **DAY 4 - Pre-layout Analysis and importance of good Clock Tree**
+
+### LAB
+
+In order to perform PnR (Placement and Routing), all the information present in a layout file is not necessary. A *.lef* file is extracted from the inverter layout file. This is in order to make it into a standard cell that can be implemented in other designs as well.
+
+Some primary requirements for PnR are :
+1. The I/O ports must be present at the junctions where the vertical and horizontal tracks intersect.
+2. The standard cell's width should be an odd multiple of the track's horizontal pitch.
+3. The standard cell's height must be an odd multiple of the track's vertical pitch.
+
+**Steps to convert grid info to track info**
+Open the custom inverter layout, from the *vsdstdcelldesign* library in MAGIC using the command
+```
+magic -T sky130A.tech sky130_inv.mag &
+```
+![image](https://github.com/user-attachments/assets/b36708d1-2a9f-4210-8565-f29363a28b18)
+
+In the *tckon* console, type the command 
+```
+grid 0.46um 0.34um 0.23um 0.17um
+```
+![image](https://github.com/user-attachments/assets/b3057a36-9e4b-497d-8fed-4f21908acedc)
+
+From expanding this layout view, it is seen that the li1 layer is completely on the grid layer. The inout and output ports lie on the intersections of vertical and horizontal tracks. Moreover, the width of the standard cell is seen to be 3 grid/track boxes. Thus all the requisite conditions are satisfied. 
+
+**Converting MAGIC layout to a standard cell LEF**
+First port definitions are created by selecting the port, going to file -> text, and entering details.
+
+![image](https://github.com/user-attachments/assets/5a38e27a-ef98-4885-964c-e732d0fbf6a8)
+
+Next the port class and port use attributes are set, in order to define the purpose of the port, using the commands 
+```
+# confirm the port
+what
+# define the port class and use
+port class input
+port use signal
+```
+This is repeated for all the ports in the layout. Then the *.mag* file is saved using the command in *tckon* :
+```
+save sky130_vsdinv.mag
+```
+![image](https://github.com/user-attachments/assets/916480a1-e14d-4fdd-a810-d9262d006f2a)
+
+Next, the saved *.mag* file is opened using the command in the terminal :
+```
+magic -T sky130A.tech sky130_vsdinv.mag &
+```
+In the *tckon* console, enter the following command to extract the lef file
+```
+lef write
+```
+Now the extracted lef file is visible in the same directory
+![image](https://github.com/user-attachments/assets/7f9b474b-1135-4268-9fc1-c723168c3417)
+
+![image](https://github.com/user-attachments/assets/7c503fa3-243d-4406-a606-a6942e24a9e5)
+
+Now this lef file is copied into the source directory of picorv32a using the command
+```
+cp sky130_vsdinv.lef /home/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/src
+```
+From this stage onwards, the standard cell for the inverter is to be included in the picorv32a design. Once again, the first stage is **synthesis**, similar to the execution of Day 1. In order for synthesis to run successfully, the standard cell library files are required. These are copied using the command :
+```
+cp sky130_fd_sc_hd__* /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/src
+```
+![image](https://github.com/user-attachments/assets/1d9c07d0-28cc-44ef-8cd7-6e0f3da3f182)
+
+In addition, the *config.tcl* file needs to be modified as shown in the figure below.
+
+![image](https://github.com/user-attachments/assets/5121e4bd-c961-4ab8-a732-dbcb0f29d5ee)
+
+Now once again the docker is invoked and the same steps for synthesis are repeated 
+```
+./flow.tcl
+package require openlane 0.9
+prep -design picorv32a -tag -overwrite
+run_synthesis
+```
