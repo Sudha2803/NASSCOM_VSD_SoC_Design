@@ -146,5 +146,4 @@ magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs
 The result of the placement step is shown below.
 ![Screenshot 2024-08-18 061812](https://github.com/user-attachments/assets/c7baa116-a603-46c8-be27-5fac61d9339c)
 Again for this, details regarding the specific cells and interconnections can be accessed using commands typed into the *tckon* window.
-
 ![Screenshot 2024-08-18 061912](https://github.com/user-attachments/assets/1aca1258-3aff-4a6f-8817-72476b5ad867)
