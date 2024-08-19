@@ -400,3 +400,19 @@ The variable is checked with the command
 echo $::env(SYNTH STRATEGY)
 ```
 In this case te synthesis is already delay drive, so no changes need to be made. 
+Next step is placement, using the command
+```
+run_placement
+```
+![image](https://github.com/user-attachments/assets/8bcd7853-11d1-4dbe-b61f-31f401f515f8)
+![Screenshot 2024-08-20 012632](https://github.com/user-attachments/assets/06d3fafb-1c7f-4607-b691-bc4ecdc071ae)
+
+Now placement has been succesfully run.
+Moreover, it is seen that the total negative slack is 0, which indicates no **slack violation**
+
+Now to view the user defined cell inside the design, once again the MAGIC tool is utilized. Enter the following commands 
+```
+cd /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-08_06-08/results/placement
+magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.placement.def &
+```
+
