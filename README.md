@@ -441,3 +441,4 @@ Now running STA analysis in openlane by the command
 ```
 sta pre_sta.conf
 ```
+![image](https://github.com/user-attachments/assets/9509a26a-12e2-4c22-8aeb-5ac69d4c5c8a)
