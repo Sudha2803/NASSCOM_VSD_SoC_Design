@@ -442,3 +442,75 @@ Now running STA analysis in openlane by the command
 sta pre_sta.conf
 ```
 ![image](https://github.com/user-attachments/assets/9509a26a-12e2-4c22-8aeb-5ac69d4c5c8a)
+
+
+The timing details can also be viewed as a result of this operation. Thus the timing requirements are met as shown in the figure.
+
+![image](https://github.com/user-attachments/assets/af2b62da-c46a-4c7f-8689-dd09a7d349cd)
+
+Next, the clock tree synthesis and routing is carried out. 
+
+**Steps to carry out CTS using TritonCTS**
+TritonCTS is the EDA tool that carries out clock tree synthesis. Various CTS variables are present in the *README.md* file in configuration directory
+
+To rewrite the verilog file post synthesis, the command
+```
+write_verilog /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-08_06-08/results/synthesis/picorv32a.synthesis.v
+```
+Now, returning to the OpenLANE docker, after having rewritten the verilog file, floorplan is run using the commands
+```
+init_floorplan
+place_io
+tap_decap_or
+```
+
+![Screenshot 2024-08-20 093821](https://github.com/user-attachments/assets/328d5575-321b-4504-92ff-5c27ad4ee283)
+
+Next run placement using the command
+
+```
+run_placement
+```
+![image](https://github.com/user-attachments/assets/d395516c-89ba-4214-96c9-5cc13ee1a5e1)
+
+```
+run_cts
+```
+
+![image](https://github.com/user-attachments/assets/fe48f074-9b10-4734-8e17-9d355cb3eccf)
+
+In this stage, the clock buffers get added, which changes the netlist. After this step, a new *.cts* file has been created to the synthesis directory, containing details of the previous netlist as well as clock buffers added in this stage.
+
+**Timing Analysis using OpenSTA**
+For timing analysis, first the database containing ass lef and def files is created by the following commands.
+```
+read_lef /openLANE_flow/designs/picorv32a/runs/17-08_06-08/tmp/merged.lef
+read_def /openLANE_flow/designs/picorv32a/runs/17-08_06-08/results/cts/picorv32a.cts.def
+```
+
+![image](https://github.com/user-attachments/assets/eb5f0839-f2ba-41d3-835c-6cadd0bda15c)
+
+![image](https://github.com/user-attachments/assets/319f4ae1-4e81-4a5a-9ca6-3af9ee6671b7)
+
+```
+read_db pico_cts.db
+read_verilog /openLANE_flow/designs/picorv32a/runs/26-07_10-33/results/synthesis/picorv32a.synthesis_cts.v
+read_liberty $::env(LIB_SYNTH_COMPLETE)
+read_sdc /openLANE_flow/designs/picorv32a/src/my_base.sdc
+set_propagated_clock [all_clocks]
+report_checks -path_delay min_max -format full_clock_expanded -digits 4
+```
+
+![image](https://github.com/user-attachments/assets/82c2069a-3c28-4f1a-b35c-7d57ad93eb9a)
+
+![image](https://github.com/user-attachments/assets/0d4ef0a0-7ca2-487b-a172-ef9bf5a4f79c)
+Here it is also seen that the slack in the hold time is satisfactorily met.
+
+**Steps to execute OpenSTA with the right timing libraries and CTS assignment**
+
+Exit from openroad. Check the buffers utilized in the CTS netlist using the command
+```
+echo $::env(CTS_CLK_BUFFER_LIST)
+```
+![image](https://github.com/user-attachments/assets/1117b7dd-6efe-4d23-9033-ba1b16b25581)
+
