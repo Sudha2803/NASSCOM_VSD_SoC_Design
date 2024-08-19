@@ -377,6 +377,12 @@ After synthesis has been run, add the following commands to incorporate the addi
 set lefs [glob $::env(DESIGN_DIR)/src/*.lef]  
 add_lefs -src $lefs
 ```
+Once this is done, the OpenLANE flow is continued by running floorplan stage using the command 
+```
+init_floorplan
+place_io
+tap_decap_io
+```
 
 From the results of the synthesis, it is observed that there are 1554 instances of the user defined standard cell **sky130_vsdinv**. 
 Moreover, the chip area is 147712.91
@@ -393,4 +399,4 @@ The variable is checked with the command
 ```
 echo $::env(SYNTH STRATEGY)
 ```
-
+In this case te synthesis is already delay drive, so no changes need to be made. 
