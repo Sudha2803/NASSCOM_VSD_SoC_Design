@@ -370,3 +370,27 @@ package require openlane 0.9
 prep -design picorv32a -tag -overwrite
 run_synthesis
 ```
+![image](https://github.com/user-attachments/assets/e86b3048-673a-4738-a9c2-080717790745)
+
+After synthesis has been run, add the following commands to incorporate the additional lef file into the flow
+```
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]  
+add_lefs -src $lefs
+```
+
+From the results of the synthesis, it is observed that there are 1554 instances of the user defined standard cell **sky130_vsdinv**. 
+Moreover, the chip area is 147712.91
+
+![image](https://github.com/user-attachments/assets/c40e5e3d-1737-4b4a-9d98-c35c743f27d6)
+
+It is also observed that the worst slack is -23.89 and the total negative slack is -711.59. This can be combatted by running timing-driven synthesis.
+In the *README.md* file, a parameter called **SYNTH)_STRATEGY** is defined, whose value specifies the optimization of the syntehsis step
+
+* 0/1 - Delay driven
+* 2/3 - Area driven
+
+The variable is checked with the command 
+```
+echo $::env(SYNTH STRATEGY)
+```
+
