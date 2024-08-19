@@ -551,7 +551,10 @@ This design successfuly incorporated the user defined inverter standard cell. A 
 
 ![image](https://github.com/user-attachments/assets/743d5113-1c95-41bd-8530-a82a2dc96a40)
 
+## REFERENCES
+* [VSD Standard Cell Design](https://github.com/nickson-jose/vsdstdcelldesign.git)
+* [Google Skywater PDK](https://skywater-pdk.readthedocs.io/en/main/index.html)
 
-#### Acknowledgements
+## Acknowledgements
 * **Kunal Ghosh**, Co founder (VSD Corp. Pvt. Ltd)
 * **Nickson P Jose**, Teaching Assistant (VSD Corp. Pvt. Ltd.)
