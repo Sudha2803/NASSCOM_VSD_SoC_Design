@@ -514,3 +514,44 @@ echo $::env(CTS_CLK_BUFFER_LIST)
 ```
 ![image](https://github.com/user-attachments/assets/1117b7dd-6efe-4d23-9033-ba1b16b25581)
 
+## **DAY 5 - Final steps for RTL2GDS using tritonRoute and openSTA**
+
+**Building a power distribution network for the design**
+
+After the CTS has been generated, a power distribution netowkr (PDN) is created (in OpenLANE, exit openroad) for the design before routing is begun. Using the following command
+```
+gen_pdn
+```
+![image](https://github.com/user-attachments/assets/71ca1bba-f9db-49c2-9905-dd374d2db526)
+
+Once the PDN has been successfully generated, the design can now be routed.The grid and straps for power and ground have been created.  
+
+![image](https://github.com/user-attachments/assets/479c88a5-93e6-48b5-8948-0a9fe3d15696)
+
+The details pertaining to routing variables can be found in the *README.md* in the configuration directory. Run the following command for routing
+```
+run_routing
+```
+
+![image](https://github.com/user-attachments/assets/ec97b4bd-0847-4872-8768-2f26896b21e1)
+The design has been routed successfully. To view the final results, which include the *parasitic extraction file* *.spef*, go to the following directory
+```
+/home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/20-08_05-43/routing
+```
+
+![image](https://github.com/user-attachments/assets/77d9d00a-d793-4c89-9897-64b58ca66b55)
+
+To view the final layout, use the command 
+```
+magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.def
+```
+![image](https://github.com/user-attachments/assets/499d28b2-a518-4a8d-a9d2-d307607c5a4c)
+
+This design successfuly incorporated the user defined inverter standard cell. A zoomed in image of the design with the standard inverter cell highlighted is shown below.
+
+![image](https://github.com/user-attachments/assets/743d5113-1c95-41bd-8530-a82a2dc96a40)
+
+
+#### Acknowledgements
+* **Kunal Ghosh**, Co founder (VSD Corp. Pvt. Ltd)
+* **Nickson P Jose**, Teaching Assistant (VSD Corp. Pvt. Ltd.)
