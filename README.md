@@ -416,3 +416,28 @@ cd /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.placement.def &
 ```
 
+![Screenshot 2024-08-20 021758](https://github.com/user-attachments/assets/b31edd2d-edc9-4f8c-89dc-b8b05f6044a8)
+
+![image](https://github.com/user-attachments/assets/f6a64d92-a812-4dce-a8c3-05fa40720ccd)
+
+As shown, the user defined standard cell is present within the picorv32a design. 
+
+**Static Timing Analysis**
+Post floorplanning and placement, Static Timing Analysis is conducted to examine the proper fucntionality of the cell without any timing violations.
+
+An STA config file is created in the directory 
+```
+/home/vsduser/Desktop/work/tools/openlane_working_dir/openlane
+```
+
+![image](https://github.com/user-attachments/assets/ae1c32f6-ff0a-4e03-8e25-b3e2e5dfb428)
+![Screenshot 2024-08-20 032549](https://github.com/user-attachments/assets/725f1972-09fa-4b59-ade1-e8ac741b2401)
+
+An sdc file containing all the specifications is created in the **src** directory of picorv32a
+
+![image](https://github.com/user-attachments/assets/33a2bda6-9027-41a3-838e-a482d7eb9e8f)
+
+Now running STA analysis in openlane by the command
+```
+sta pre_sta.conf
+```
